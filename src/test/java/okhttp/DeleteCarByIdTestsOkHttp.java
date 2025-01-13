@@ -1,10 +1,9 @@
 package okhttp;
 
 import dto.CarDtoApi;
-import dto.ResponseMessageDto;
+import dto.CarsDto;
 import dto.TokenDto;
 import dto.UserDtoLombok;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -15,12 +14,10 @@ import org.testng.asserts.SoftAssert;
 import utils.BaseApi;
 
 import java.io.IOException;
-import java.util.Random;
 
 import static utils.PropertiesReader.getProperty;
 
-public class AddNewCarTestOkHttp implements BaseApi {
-
+public class DeleteCarByIdTestsOkHttp implements BaseApi {
     SoftAssert softAssert = new SoftAssert();
     TokenDto tokenDto;
 
@@ -47,39 +44,50 @@ public class AddNewCarTestOkHttp implements BaseApi {
         }
     }
 
-    @Test(invocationCount = 1)
-    public void addNewCarPositiveTest() {
-        int i = new Random().nextInt(10000);
-        CarDtoApi carDtoApi = CarDtoApi.builder()
-                .serialNumber("number" + i)
-                .manufacture("Ford")
-                .model("Focus")
-                .city("Haifa")
-                .fuel("Electric")
-                .about("about my car")
-                .carClass("A")
-                .seats(5)
-                .year("2020")
-                .pricePerDay(345.5)
-                .build();
-        RequestBody requestBody = RequestBody.create(GSON.toJson(carDtoApi), JSON);
+    @Test
+    public void deleteCarByIdPositiveTest() {
+        String serialNumberFirstElement = "";
+        CarDtoApi[] arrayCar = getAllUserCars();
+        if (arrayCar != null) {
+            serialNumberFirstElement = arrayCar[0].getSerialNumber();
+            System.out.println("--> " + serialNumberFirstElement);
+        }else
+            Assert.fail("method get returned null");
         Request request = new Request.Builder()
-                .url(BASE_URL + ADD_NEW_CAR)
+                .url(BASE_URL+ADD_NEW_CAR+"/"+serialNumberFirstElement)
                 .addHeader(AUTH, tokenDto.getAccessToken())
-                .post(requestBody)
+                .delete()
                 .build();
-        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
-            System.out.println(response.isSuccessful() + " code " + response.code());
-            if (response.isSuccessful()) {
-                softAssert.assertEquals(response.code(), 200);
-                System.out.println(response.toString());
-                ResponseMessageDto responseMessageDto = GSON.fromJson(response.body().string(), ResponseMessageDto.class);
-                softAssert.assertTrue(responseMessageDto.getMessage().equals("Car added successfully"));
-                softAssert.assertAll();
+        try(Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            if(response.isSuccessful()){
+                System.out.println("delete successful");
+
             } else
-                Assert.fail("response status code --> " + response.code());
-        } catch (IOException e) {
-            Assert.fail("created exception");
+                Assert.fail("method delete is not successful --> " + response.code());
+        }catch (IOException e){
+            Assert.fail("created exception method delete");
         }
     }
+
+    private CarDtoApi[] getAllUserCars() {
+        Request request = new Request.Builder()
+                .url(BASE_URL + GET_USER_CARS)
+                .addHeader(AUTH, tokenDto.getAccessToken())
+                .get()
+                .build();
+        try (Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                CarsDto carsDto = GSON.fromJson(response.body().string(), CarsDto.class);
+                return carsDto.getCars();
+            } else {
+                System.out.println("wrong get request --> " + response.code());
+                return null;
+            }
+        } catch (IOException e) {
+            System.out.println("Created exception get user cars, return null");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
