@@ -23,7 +23,7 @@ public class SearchCarTests extends ApplicationManager {
     @Test
     public void searchCarNegativeTest_wrongCity(){  //div[@class='ng-star-inserted']
         searchPage = new SearchPage(getDriver());
-        searchPage.fillSearchCarFormWOCalendar("", "03/25/2025", "04/27/2025");
+        searchPage.fillSearchCarFormWOCalendar("", "03/25/2025", "04/28/2025");
         Assert.assertTrue(searchPage.isElementPresentDOM("//*[text()=' City is required ']", 3));
     }
 
