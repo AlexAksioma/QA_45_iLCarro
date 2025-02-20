@@ -18,7 +18,7 @@ public class RegistrationTestsOkHttp implements BaseApi {
 
     SoftAssert softAssert = new SoftAssert();
 
-    @Test
+    @Test(groups = {"smoke","positive"})
     public void registrationPositiveTest() {
         int i = new Random().nextInt(1000) + 1000;
         UserDtoLombok user = UserDtoLombok.builder()

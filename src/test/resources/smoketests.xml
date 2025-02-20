@@ -2,9 +2,17 @@
 
 <suite name="suite2" verbose="1">
     <test name="smoketests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <exclude name="positive"/>
+            </run>
+        </groups>
         <classes>
             <class name="okhttp.AddNewCarTestOkHttp"/>
             <class name="okhttp.RegistrationTestsOkHttp"/>
+            <class name="tests.LoginTests"/>
+            <!--class name="tests.SearchCarTests"/-->
         </classes>
     </test>
 </suite>

@@ -47,7 +47,7 @@ public class AddNewCarTestOkHttp implements BaseApi {
         }
     }
 
-    @Test(invocationCount =2)
+    @Test(invocationCount=2, groups = "smoke")
     public void addNewCarPositiveTest() {
         int i = new Random().nextInt(10000);
         CarDtoApi carDtoApi = CarDtoApi.builder()

@@ -16,12 +16,12 @@ public class LoginTests extends ApplicationManager {
 
     LoginPage loginPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void goToLoginPage(){
         new SearchPage(getDriver()).clickBtnLogin();
     }
 
-    @Test
+    @Test(groups = "smoke")
     public void loginPositiveTest(){
         UserDtoLombok user = UserDtoLombok.builder()
                 .username("alexmed123@gmail.com")

@@ -22,7 +22,7 @@ public class ApplicationManager {
         return driver;
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup(Method method) {
         //logger.info("Start testing --> " + method.getName());
         ChromeOptions options = new ChromeOptions();
@@ -35,10 +35,10 @@ public class ApplicationManager {
 
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown(Method method) {
-        //logger.info("Stop testing --> " + method.getName());
-//        if (driver != null)
-//            driver.quit();
+        logger.info("Stop testing --> " + method.getName());
+        if (driver != null)
+            driver.quit();
     }
 }
